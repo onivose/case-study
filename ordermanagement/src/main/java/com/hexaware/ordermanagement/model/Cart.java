@@ -28,14 +28,16 @@ public class Cart {
     )
     private Customer customer;
 
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    //todo fix this
+    // Getting Hibernate Mapping Exception: Foreign key must have same number of columns as the referenced primary key
+    /*@OnDelete(action = OnDeleteAction.CASCADE)
     @ManyToMany
     @JoinTable(
             name = "products",
             joinColumns = @JoinColumn(name = "cartId"),
             inverseJoinColumns = @JoinColumn(name = "productId")
     )
-    private Set<Product> products = new HashSet<>();
+    private Set<Product> products = new HashSet<>();*/
 
     @Column (columnDefinition = "float default 0")
     private Double total;

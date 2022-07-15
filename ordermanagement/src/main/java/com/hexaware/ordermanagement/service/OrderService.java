@@ -27,7 +27,11 @@ public interface OrderService {
      */
     Optional<Order> getOrderById(Integer orderId);
 
-
+    /**
+     * creates an order and persists it into the database
+     * @param order
+     * @return order
+     */
     Order createOrder(Order order);
 
 }

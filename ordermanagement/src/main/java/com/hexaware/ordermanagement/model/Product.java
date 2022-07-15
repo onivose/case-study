@@ -29,4 +29,6 @@ public class Product {
     @Column(nullable = false)
     private double price;
 
+    @Column(columnDefinition = "boolean default false")
+    private Boolean purchased;
 }
