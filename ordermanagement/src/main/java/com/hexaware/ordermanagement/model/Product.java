@@ -24,6 +24,9 @@ public class Product {
     private String manufacturer;
 
     @Column(nullable = false)
+    private String type;
+
+    @Column(nullable = false)
     private String description;
 
     @Column(nullable = false)

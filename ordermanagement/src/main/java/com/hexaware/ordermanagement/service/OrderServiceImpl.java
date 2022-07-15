@@ -49,7 +49,6 @@ public class OrderServiceImpl implements OrderService{
 
         return customer !=null ? this.orderRepo.getByCustomer(customer) : null;
 
-
         /*List<Order> orderListFromDb = this.orderRepo.getByCustomer(customer);
         return orderListFromDb;*/
     }
