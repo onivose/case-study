@@ -11,4 +11,8 @@ import java.util.List;
 public interface OrderRepo extends JpaRepository<Order, Integer> {
 
     List<Order> getByCustomer(Customer customer);
+
+    /*List<Order> findByTotalGreaterThan(Double total);
+
+    List<Order> findByTotalLessThan(Double total);*/
 }

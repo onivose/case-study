@@ -1,4 +1,4 @@
-package com.hexaware.ordermanagement.model;
+package com.hexaware.ordermanagement.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
