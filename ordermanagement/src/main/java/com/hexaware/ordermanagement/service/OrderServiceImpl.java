@@ -126,35 +126,43 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public Order submitOrder(List<Integer> productIds, Integer orderId) {
 
-        Order orderToSubmit = this.getOrderById(orderId); // add null checker validation here
+        Order orderToSubmit = this.getOrderById(orderId); // todo add null checker validation here
 
-        //FOR TESTING ONLY, REMOVE AFTER TESTING
+        //------------------------FOR TESTING ONLY, REMOVE AFTER TESTING---------------------------
         productService.getInitialProducts(); //persists some products in the db
-
-        //todo get products by id from db instead of building them to fix total = 0 issue
-
-        /*Product product1 = productService.getProductById(1); //gets the persisted product from the db
-
-        Product product2 = productService.getProductById(2);*/
-
+        //------------------------------------------------------------------------------------------
 
         List<Product> orderProducts = new ArrayList<>();
 
         for (Integer id : productIds){
-            //add check to make sure product exists
-            orderProducts.add(productService.getProductById(id));
+            // get the product by id
+            Product orderProduct = productService.getProductById(id);
+
+            // todo add check to make sure product exists
+
+            // set purchased true so two customers can't buy the same product
+            orderProduct.setPurchased(true);
+
+            // set the order fk
+            orderProduct.setOrderFk(orderToSubmit);
+
+            // add product to orderProduct list
+            orderProducts.add(orderProduct);
         }
 
         orderToSubmit.setProducts(orderProducts);
 
-        //calculate and set order total before saving to db
+        // calculate and set order total before saving to db
         orderToSubmit.setTotal(this.calculateOrderTotal(orderToSubmit));
 
-        //change order status to "submitted"
+        // change order status to "submitted"
         orderToSubmit.setSubmitted(true);
 
+        // save and persist order in database
+        // have to use save and flush here because we need to retrieve the persisted entity later in this transaction
         orderRepo.saveAndFlush(orderToSubmit);
 
+        // return the persisted order to client via controller
         return this.getOrderById(orderToSubmit.getOrderId());
     }
 }

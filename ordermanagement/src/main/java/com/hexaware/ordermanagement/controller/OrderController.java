@@ -65,6 +65,22 @@ public class OrderController {
 
         logger.info("REQUEST: " + "--POST-- api/v1/order @ " + LocalDateTime.now());
 
+        Order orderToSubmit = orderService.getOrderById(orderId);
+
+        //Null check to validate that there is an order started with that id
+        if(orderToSubmit == null){
+            JsonResponse jsonResponse = new JsonResponse(false, "No order exist with order Id: " + orderId, null);
+            return new ResponseEntity<>(jsonResponse, HttpStatus.NOT_FOUND);
+        }
+
+        //Check to validate that the order with that id has not already been submitted
+        else if(orderToSubmit.getSubmitted()){
+            JsonResponse jsonResponse = new JsonResponse(false,
+                    "Order with id " + orderId + " has already been submitted",
+                    null);
+            return new ResponseEntity<>(jsonResponse, HttpStatus.CONFLICT);
+        }
+
         Order submittedOrder = orderService.submitOrder(productIds, orderId);
 
         JsonResponse jsonResponse = new JsonResponse(true, "Order successfully submitted", submittedOrder);
