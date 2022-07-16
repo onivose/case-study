@@ -1,5 +1,6 @@
 package com.hexaware.ordermanagement.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -50,6 +51,7 @@ public class Order {
     // @OnDelete to make sure that if all the products of an order have been deleted, the order itself will also be deleted
     @OnDelete(action = OnDeleteAction.CASCADE)
     @OneToMany(mappedBy = "orderFk")
+    @JsonIgnoreProperties({"orderFk"}) // need this to avoid infinite loop which would cause stack overflow error to be raised
     private List<Product> products = new ArrayList<>();
 
 

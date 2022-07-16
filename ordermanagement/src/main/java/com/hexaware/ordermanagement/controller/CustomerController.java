@@ -27,7 +27,7 @@ public class CustomerController {
     }
 
     /**
-     * <H1>For Internal Use Only</H1>
+     * <H1>FOR INTERNAL USE ONLY</H1>
      * used to pre-populate database with users
      * not required as part of case study
      * @param customer
@@ -53,7 +53,6 @@ public class CustomerController {
         }
     }
 
-    //todo prepopulate products on login?
     @PostMapping("login")
     public ResponseEntity<JsonResponse> login ( @RequestBody Customer customer){
         logger.info("REQUEST: " + "--POST-- api/v1/customer/login @ " + LocalDateTime.now());

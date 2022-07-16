@@ -2,6 +2,7 @@ package com.hexaware.ordermanagement.controller;
 
 import com.hexaware.ordermanagement.model.Customer;
 import com.hexaware.ordermanagement.model.Product;
+import com.hexaware.ordermanagement.service.ProductService;
 import com.hexaware.ordermanagement.util.JsonResponse;
 import com.hexaware.ordermanagement.model.Order;
 import com.hexaware.ordermanagement.service.CustomerService;
@@ -27,11 +28,13 @@ public class OrderController {
 
     private CustomerService customerService;
     private OrderService orderService;
+    private ProductService productService;
 
     @Autowired
-    public OrderController(CustomerService customerService, OrderService orderService) {
+    public OrderController(CustomerService customerService, OrderService orderService, ProductService productService) {
         this.customerService = customerService;
         this.orderService = orderService;
+        this.productService = productService;
     }
 
     //WORKS
@@ -59,7 +62,7 @@ public class OrderController {
 
     }
 
-    //todo finish this
+    //WORKS
     @PostMapping("submit/{orderId}")
     public ResponseEntity<JsonResponse> submitOrder(@RequestBody List<Integer> productIds, @PathVariable Integer orderId){
 
@@ -81,6 +84,18 @@ public class OrderController {
             return new ResponseEntity<>(jsonResponse, HttpStatus.CONFLICT);
         }
 
+        // null check to make sure each product in the order exists
+        for (Integer id : productIds) {
+            // get the product by id
+            Product orderProduct = productService.getProductById(id);
+
+            if (orderProduct == null) {
+                JsonResponse jsonResponse = new JsonResponse(false, "No product exist with Id: " + id, null);
+                return new ResponseEntity<>(jsonResponse, HttpStatus.NOT_FOUND);
+            }
+        }
+
+        // If all the validation checks are passed -> submit the order
         Order submittedOrder = orderService.submitOrder(productIds, orderId);
 
         JsonResponse jsonResponse = new JsonResponse(true, "Order successfully submitted", submittedOrder);
@@ -104,6 +119,7 @@ public class OrderController {
         return ResponseEntity.ok(jsonResponse);
     }
 
+    //WORKS
     /**
      * Endpoint to find all orders in the database with total greater than the given value in path parameter
      *
@@ -120,10 +136,16 @@ public class OrderController {
         List<Order> orderListFromDb = orderService.findAllWithTotalGreaterThan(total);
 
         if(orderListFromDb.isEmpty()) {
-            jsonResponse = new JsonResponse(false, "No orders available to display", null);
+            jsonResponse = new JsonResponse(false,
+                    "No order(s) with total greater than "+ total + " available to display",
+                    null);
             return new ResponseEntity<>(jsonResponse, HttpStatus.NOT_FOUND);
         }
-        jsonResponse = new JsonResponse(true, "All orders successfully retrieved", orderListFromDb);
+
+        Integer numOfOrders = orderListFromDb.size();
+        jsonResponse = new JsonResponse(true,
+                 numOfOrders + " order(s) with total greater than "+ total + " successfully retrieved",
+                orderListFromDb);
         return ResponseEntity.ok(jsonResponse);
     }
 
@@ -143,10 +165,16 @@ public class OrderController {
         List<Order> orderListFromDb = orderService.findAllWithTotalLessThan(total);
 
         if(orderListFromDb.isEmpty()) {
-            jsonResponse = new JsonResponse(false, "No orders available to display", null);
+            jsonResponse = new JsonResponse(false,
+                    "No order(s) with total less than "+ total + " available to display",
+                    null);
             return new ResponseEntity<>(jsonResponse, HttpStatus.NOT_FOUND);
         }
-        jsonResponse = new JsonResponse(true, "All orders successfully retrieved", orderListFromDb);
+
+        Integer numOfOrders = orderListFromDb.size();
+        jsonResponse = new JsonResponse(true,
+                numOfOrders + " order(s) with total less than "+ total + " successfully retrieved",
+                orderListFromDb);
         return ResponseEntity.ok(jsonResponse);
 
     }
@@ -199,6 +227,5 @@ public class OrderController {
             return new ResponseEntity<>(jsonResponse, HttpStatus.CONFLICT);
         }
     }
-
 
 }

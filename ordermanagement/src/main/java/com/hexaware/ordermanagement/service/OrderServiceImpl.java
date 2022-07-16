@@ -126,11 +126,11 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public Order submitOrder(List<Integer> productIds, Integer orderId) {
 
-        Order orderToSubmit = this.getOrderById(orderId); // todo add null checker validation here
+        Order orderToSubmit = this.getOrderById(orderId);
 
-        //------------------------FOR TESTING ONLY, REMOVE AFTER TESTING---------------------------
-        productService.getInitialProducts(); //persists some products in the db
-        //------------------------------------------------------------------------------------------
+        //---------------------------FOR TESTING ONLY, REMOVE AFTER TESTING--------------------------------------------
+        // productService.getInitialProducts(); //persists some products in the db to check submit order functionality
+        //-------------------------------------------------------------------------------------------------------------
 
         List<Product> orderProducts = new ArrayList<>();
 
@@ -138,13 +138,19 @@ public class OrderServiceImpl implements OrderService{
             // get the product by id
             Product orderProduct = productService.getProductById(id);
 
-            // todo add check to make sure product exists
+            // null check to make sure each product in the order exists
+            if (orderProduct == null){
+                return null;
+            }
 
             // set purchased true so two customers can't buy the same product
             orderProduct.setPurchased(true);
 
             // set the order fk
             orderProduct.setOrderFk(orderToSubmit);
+
+            //persist the product to the database
+            productService.updateProduct(orderProduct);
 
             // add product to orderProduct list
             orderProducts.add(orderProduct);

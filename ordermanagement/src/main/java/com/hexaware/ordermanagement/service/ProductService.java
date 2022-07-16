@@ -2,6 +2,8 @@ package com.hexaware.ordermanagement.service;
 
 import com.hexaware.ordermanagement.model.Product;
 
+import java.util.List;
+
 public interface ProductService {
 
     void getInitialProducts();
@@ -15,7 +17,12 @@ public interface ProductService {
      */
     Product getProductById(Integer productId);
 
+    void updateProduct(Product product);
+
+    List<Product> getAllAvailableProducts();
+
+    //----------------------------------------------------------------------------------------------------------
     // don't need this if adding products manually to order object in front end
-    //void addProductToOrder(Integer productId, Integer orderId); // not required by case study
+    // void addProductToOrder(Integer productId, Integer orderId); // not required by case study
 
 }
