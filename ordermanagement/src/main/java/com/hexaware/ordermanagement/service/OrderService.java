@@ -15,6 +15,18 @@ public interface OrderService {
     List<Order> getAllOrders();
 
     /**
+     * finds all orders in the database with total greater than the given value
+     * @return List of orders or null if no orders are present
+     */
+    List<Order> findAllWithTotalGreaterThan(Double total);
+
+    /**
+     * finds all orders in the database with total less than the given value
+     * @return List of orders or null if no orders are present
+     */
+    List<Order> findAllWithTotalLessThan(Double total);
+
+    /**
      * finds all orders for the customer wth the given id
      * @param customerId
      * @return List of orders or null if no orders are present for that customer
@@ -34,5 +46,13 @@ public interface OrderService {
      * @return order
      */
     Order createOrder(Order order);
+
+    /**
+     * Calculates the total sum of an order
+     *
+     * @param order
+     * @return total sum of products in order
+     */
+    Double calculateOrderTotal (Order order);
 
 }

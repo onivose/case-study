@@ -2,13 +2,14 @@ package com.hexaware.ordermanagement.service;
 
 import com.hexaware.ordermanagement.model.Customer;
 import com.hexaware.ordermanagement.model.Order;
-import com.hexaware.ordermanagement.repository.CartRepo;
+import com.hexaware.ordermanagement.model.Product;
 import com.hexaware.ordermanagement.repository.CustomerRepo;
 import com.hexaware.ordermanagement.repository.OrderRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,13 +18,11 @@ import java.util.Optional;
 public class OrderServiceImpl implements OrderService{
 
     private OrderRepo orderRepo;
-    private CartRepo cartRepo;
     private CustomerRepo customerRepo;
 
     @Autowired
-    public OrderServiceImpl(OrderRepo orderRepo, CartRepo cartRepo, CustomerRepo customerRepo) {
+    public OrderServiceImpl(OrderRepo orderRepo, CustomerRepo customerRepo) {
         this.orderRepo = orderRepo;
-        this.cartRepo = cartRepo;
         this.customerRepo = customerRepo;
     }
 
@@ -35,6 +34,28 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public List<Order> getAllOrders() {
         return this.orderRepo.findAll();
+    }
+
+    /**
+     * finds all orders in the database with total greater than the given value
+     *
+     * @param total
+     * @return List of orders or null if no orders are present
+     */
+    @Override
+    public List<Order> findAllWithTotalGreaterThan(Double total) {
+        return this.orderRepo.findByTotalGreaterThan(total);
+    }
+
+    /**
+     * finds all orders in the database with total less than the given value
+     *
+     * @param total
+     * @return List of orders or null if no orders are present
+     */
+    @Override
+    public List<Order> findAllWithTotalLessThan(Double total) {
+        return orderRepo.findByTotalLessThan(total);
     }
 
     /**
@@ -73,5 +94,21 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public Order createOrder(Order order) {
         return this.orderRepo.save(order);
+    }
+
+    /**
+     * Calculates the total sum of an order
+     *
+     * @param order
+     * @return total sum of products in order
+     */
+    @Override
+    public Double calculateOrderTotal(Order order) {
+        List<Product> products = order.getProducts();
+        List<Double> productPrices = new ArrayList<>();
+        for (Product product : products){
+            productPrices.add(product.getPrice());
+        }
+        return productPrices.stream().mapToDouble(Double::doubleValue).sum(); //todo look into this line
     }
 }

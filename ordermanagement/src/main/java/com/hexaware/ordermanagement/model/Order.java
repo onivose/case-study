@@ -4,9 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,22 +23,27 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer orderId;
 
-    @ManyToOne
-    @JoinColumn(
-            name = "cartIdFk",
-            referencedColumnName = "cartId"
-    )
-    private Cart cart;
+    @CreationTimestamp
+    private Timestamp timeSubmitted;
+
+    @Column (columnDefinition = "float default 0")
+    private Double total;
+
+    @Column (columnDefinition = "boolean default false")
+    private Boolean submitted;
 
     @ManyToOne
     @JoinColumn(
             name = "customerIdFk",
-            referencedColumnName = "customerId"
+            referencedColumnName = "customerId",
+            nullable = false
     )
     private Customer customer;
 
-    @CreationTimestamp
-    private Timestamp timeSubmitted;
+    // @OnDelete to make sure that if all the products of an order have been deleted, the order itself will also be deleted
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "orderFk")
+    private List<Product> products = new ArrayList<>();
 
 
 }
