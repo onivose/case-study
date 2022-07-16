@@ -1,6 +1,7 @@
 package com.hexaware.ordermanagement.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @Entity
 @Table(name = "products")
 public class Product {
@@ -26,7 +28,7 @@ public class Product {
     @Column(nullable = false)
     private String type;
 
-    @Column(nullable = false)
+    @Column
     private String description;
 
     @Column(nullable = false)
@@ -35,11 +37,8 @@ public class Product {
     @Column(columnDefinition = "boolean default false")
     private Boolean purchased;
 
-    // Lazy fetch meaning
-    // Cascade means that if the order is deleted, the corresponding product will also be deleted
-    @ManyToOne (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "order_id_fk",
-            nullable = false
-    )
+    // CascadeType.All means that if the order is deleted, the corresponding product will also be deleted
+    @ManyToOne (fetch = FetchType.LAZY, cascade = CascadeType.ALL) //todo look into Lazy fetch meaning
+    @JoinColumn(name = "order_id_fk")
     private Order orderFk;
 }

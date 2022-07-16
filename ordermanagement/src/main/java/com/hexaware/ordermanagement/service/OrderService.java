@@ -38,14 +38,14 @@ public interface OrderService {
      * @param orderId
      * @return order
      */
-    Optional<Order> getOrderById(Integer orderId);
+    Order getOrderById(Integer orderId);
 
     /**
-     * creates an order and persists it into the database
+     * creates an order with no products and persists it into the database
      * @param order
      * @return order
      */
-    Order createOrder(Order order);
+    Order beginNewOrder(Integer customerId);
 
     /**
      * Calculates the total sum of an order
@@ -55,4 +55,5 @@ public interface OrderService {
      */
     Double calculateOrderTotal (Order order);
 
+    Order submitOrder(List<Integer> productIds, Integer orderId);
 }

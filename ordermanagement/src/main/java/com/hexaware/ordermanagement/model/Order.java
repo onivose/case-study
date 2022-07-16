@@ -1,11 +1,13 @@
 package com.hexaware.ordermanagement.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -15,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -23,8 +26,12 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer orderId;
 
-    @CreationTimestamp
+    @UpdateTimestamp
     private Timestamp timeSubmitted;
+
+    @Column(updatable = false)
+    @CreationTimestamp
+    private Timestamp timeCreated;
 
     @Column (columnDefinition = "float default 0")
     private Double total;

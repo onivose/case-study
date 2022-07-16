@@ -1,5 +1,7 @@
 package com.hexaware.ordermanagement.controller;
 
+import com.hexaware.ordermanagement.model.Customer;
+import com.hexaware.ordermanagement.model.Product;
 import com.hexaware.ordermanagement.util.JsonResponse;
 import com.hexaware.ordermanagement.model.Order;
 import com.hexaware.ordermanagement.service.CustomerService;
@@ -13,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,21 +34,44 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+    //WORKS
+    @PostMapping("{customerId}")
+    public ResponseEntity<JsonResponse> beginNewOrder(@PathVariable Integer customerId){
+
+        Customer author = customerService.getCustomerById(customerId);
+
+        // Null check to validate that customer exists
+        if (author == null){
+            JsonResponse jsonResponse = new JsonResponse(false, "Customer does not exist with id " + customerId, null);
+            return new ResponseEntity<>(jsonResponse, HttpStatus.CONFLICT);
+        }
+
+        Order newOrder = orderService.beginNewOrder(customerId);
+
+        //Null check to validate that new order was successfully created
+        if (newOrder == null){
+            JsonResponse jsonResponse = new JsonResponse(false, "Order not created: Customer does not exist with id " + customerId, null);
+            return new ResponseEntity<>(jsonResponse, HttpStatus.CONFLICT);
+        }
+
+        JsonResponse jsonResponse = new JsonResponse(true, "Order successfully created", newOrder);
+        return new ResponseEntity<>(jsonResponse, HttpStatus.CREATED);
+
+    }
+
     //todo finish this
-    @PostMapping
-    public ResponseEntity<JsonResponse> createOrder(@Validated @RequestBody Order orderToCreate){
+    @PostMapping("submit/{orderId}")
+    public ResponseEntity<JsonResponse> submitOrder(@RequestBody List<Integer> productIds, @PathVariable Integer orderId){
 
         logger.info("REQUEST: " + "--POST-- api/v1/order @ " + LocalDateTime.now());
 
-        //calculate and set order total before saving to db
-        orderToCreate.setTotal(orderService.calculateOrderTotal(orderToCreate));
+        Order submittedOrder = orderService.submitOrder(productIds, orderId);
 
-        orderService.createOrder(orderToCreate);
-
-        JsonResponse jsonResponse = new JsonResponse(true, "Order successfully created", orderToCreate);
-        return new ResponseEntity<>(jsonResponse, HttpStatus.CREATED);
+        JsonResponse jsonResponse = new JsonResponse(true, "Order successfully submitted", submittedOrder);
+        return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
     }
 
+    //WORKS
     @GetMapping
     public ResponseEntity<JsonResponse> getAllOrders(){
 
@@ -109,6 +135,7 @@ public class OrderController {
 
     }
 
+    //WORKS
     /**
      * @param orderId
      * @return
@@ -119,7 +146,7 @@ public class OrderController {
         logger.info("REQUEST: " + "--GET-- api/v1/order/" + orderId + " @ " + LocalDateTime.now());
 
         JsonResponse jsonResponse;
-        Optional<Order> orderFromDb = orderService.getOrderById(orderId);
+        Optional<Order> orderFromDb = Optional.ofNullable(orderService.getOrderById(orderId));
 
         if(orderFromDb.isEmpty()) {
             jsonResponse = new JsonResponse(false, "No order exist with order Id: " + orderId, null);
@@ -130,19 +157,31 @@ public class OrderController {
         return ResponseEntity.ok(jsonResponse);
     }
 
+    //WORKS
     @GetMapping("customer/{customerId}")
     public ResponseEntity<JsonResponse> getAllOrdersForCustomerWithId(@PathVariable Integer customerId){
         logger.info("REQUEST: " + "--GET-- api/v1/order/customer/" + customerId + " @ " + LocalDateTime.now());
 
-        JsonResponse jsonResponse;
-        List<Order> orderListFromDb = orderService.getAllOrdersByCustomerId(customerId);
+        try {
+            JsonResponse jsonResponse;
+            List<Order> orderListFromDb = orderService.getAllOrdersByCustomerId(customerId);
 
-        if(orderListFromDb.isEmpty()) {
-            jsonResponse = new JsonResponse(false, "No orders available to display", null);
-            return new ResponseEntity<>(jsonResponse, HttpStatus.NOT_FOUND);
+            if (orderListFromDb.isEmpty()) {
+                jsonResponse = new JsonResponse(false, "No orders available to display for customer with id " + customerId, null);
+                return new ResponseEntity<>(jsonResponse, HttpStatus.NOT_FOUND);
+            }
+
+            jsonResponse = new JsonResponse(true, "All orders successfully retrieved", orderListFromDb);
+            return ResponseEntity.ok(jsonResponse);
+
+        } catch (NullPointerException e) {
+            //todo look into this line
+            logger.warn("Null pointer Exception (Cause: customer with id: "+ customerId
+                    + " does not exist.) Stack trace: " + Arrays.toString(e.getStackTrace()));
+
+            JsonResponse jsonResponse = new JsonResponse(false, "Customer does not exist with id " + customerId, null);
+            return new ResponseEntity<>(jsonResponse, HttpStatus.CONFLICT);
         }
-        jsonResponse = new JsonResponse(true, "All orders successfully retrieved", orderListFromDb);
-        return ResponseEntity.ok(jsonResponse);
     }
 
 

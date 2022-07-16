@@ -19,11 +19,13 @@ public class OrderServiceImpl implements OrderService{
 
     private OrderRepo orderRepo;
     private CustomerRepo customerRepo;
+    private ProductService productService;
 
     @Autowired
-    public OrderServiceImpl(OrderRepo orderRepo, CustomerRepo customerRepo) {
+    public OrderServiceImpl(OrderRepo orderRepo, CustomerRepo customerRepo, ProductService productService) {
         this.orderRepo = orderRepo;
         this.customerRepo = customerRepo;
+        this.productService = productService;
     }
 
     /**
@@ -31,7 +33,7 @@ public class OrderServiceImpl implements OrderService{
      *
      * @return List of orders or null if no orders are present
      */
-    @Override
+    @Override //works
     public List<Order> getAllOrders() {
         return this.orderRepo.findAll();
     }
@@ -64,14 +66,12 @@ public class OrderServiceImpl implements OrderService{
      * @param customerId
      * @return List of orders or null if no orders are present for that customer
      */
-    @Override
+    @Override // works
     public List<Order> getAllOrdersByCustomerId(Integer customerId) {
         Customer customer = customerRepo.findById(customerId).orElse(null);
 
-        return customer !=null ? this.orderRepo.getByCustomer(customer) : null;
+        return customer != null ? this.orderRepo.getByCustomer(customer) : null;
 
-        /*List<Order> orderListFromDb = this.orderRepo.getByCustomer(customer);
-        return orderListFromDb;*/
     }
 
     /**
@@ -80,20 +80,31 @@ public class OrderServiceImpl implements OrderService{
      * @param orderId
      * @return optional<order> -> need to use .isPresent() and .get() to retrieve order
      */
-    @Override
-    public Optional<Order> getOrderById(Integer orderId) {
-        return this.orderRepo.findById(orderId);
+    @Override // works
+    public Order getOrderById(Integer orderId) {
+        return this.orderRepo.findById(orderId).orElse(null);
     }
 
     /**
-     * creates an order and persists it into the database
+     * creates an order with no products and persists it into the database
      *
-     * @param order
+     * @param customerId
      * @return order
      */
-    @Override
-    public Order createOrder(Order order) {
-        return this.orderRepo.save(order);
+    @Override // works
+    public Order beginNewOrder(Integer customerId) {
+
+        Optional<Customer> author = customerRepo.findById(customerId);
+        if (author.isPresent()){
+            Order newOrder = Order.builder()
+                    .customer(author.get())
+                    .submitted(false)
+                    .total((double) 0)
+                    .build();
+
+            return this.orderRepo.save(newOrder);
+        }
+        return null;
     }
 
     /**
@@ -110,5 +121,40 @@ public class OrderServiceImpl implements OrderService{
             productPrices.add(product.getPrice());
         }
         return productPrices.stream().mapToDouble(Double::doubleValue).sum(); //todo look into this line
+    }
+
+    @Override
+    public Order submitOrder(List<Integer> productIds, Integer orderId) {
+
+        Order orderToSubmit = this.getOrderById(orderId); // add null checker validation here
+
+        //FOR TESTING ONLY, REMOVE AFTER TESTING
+        productService.getInitialProducts(); //persists some products in the db
+
+        //todo get products by id from db instead of building them to fix total = 0 issue
+
+        /*Product product1 = productService.getProductById(1); //gets the persisted product from the db
+
+        Product product2 = productService.getProductById(2);*/
+
+
+        List<Product> orderProducts = new ArrayList<>();
+
+        for (Integer id : productIds){
+            //add check to make sure product exists
+            orderProducts.add(productService.getProductById(id));
+        }
+
+        orderToSubmit.setProducts(orderProducts);
+
+        //calculate and set order total before saving to db
+        orderToSubmit.setTotal(this.calculateOrderTotal(orderToSubmit));
+
+        //change order status to "submitted"
+        orderToSubmit.setSubmitted(true);
+
+        orderRepo.saveAndFlush(orderToSubmit);
+
+        return this.getOrderById(orderToSubmit.getOrderId());
     }
 }
