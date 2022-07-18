@@ -22,6 +22,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/order")
+@CrossOrigin(origins = { "http://localhost:8080", "http://127.0.0.1:5502" })
 public class OrderController {
 
     Logger logger = LoggerFactory.getLogger(CustomerController.class);
