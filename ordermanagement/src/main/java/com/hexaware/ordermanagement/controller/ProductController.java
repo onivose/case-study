@@ -42,7 +42,7 @@ public class ProductController {
 
         if (availableProducts.isEmpty()){
             return new ResponseEntity<>(new JsonResponse(false,
-                    "There are no products currently available for purchase",
+                    "There Are No Available Products To Purchase At This Time",
                     null), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(new JsonResponse(true, "All available products retrieved",availableProducts),

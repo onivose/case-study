@@ -138,14 +138,14 @@ public class OrderController {
 
         if(orderListFromDb.isEmpty()) {
             jsonResponse = new JsonResponse(false,
-                    "No order(s) with total greater than "+ total + " available to display",
+                    "No order(s) with total greater than $"+ total + " available to display",
                     null);
             return new ResponseEntity<>(jsonResponse, HttpStatus.NOT_FOUND);
         }
 
         Integer numOfOrders = orderListFromDb.size();
         jsonResponse = new JsonResponse(true,
-                 numOfOrders + " order(s) with total greater than "+ total + " successfully retrieved",
+                 numOfOrders + " order(s) with total greater than $"+ total + " successfully retrieved",
                 orderListFromDb);
         return ResponseEntity.ok(jsonResponse);
     }
@@ -167,14 +167,14 @@ public class OrderController {
 
         if(orderListFromDb.isEmpty()) {
             jsonResponse = new JsonResponse(false,
-                    "No order(s) with total less than "+ total + " available to display",
+                    "No order(s) with total less than $"+ total + " available to display",
                     null);
             return new ResponseEntity<>(jsonResponse, HttpStatus.NOT_FOUND);
         }
 
         Integer numOfOrders = orderListFromDb.size();
         jsonResponse = new JsonResponse(true,
-                numOfOrders + " order(s) with total less than "+ total + " successfully retrieved",
+                numOfOrders + " order(s) with total less than $"+ total + " successfully retrieved",
                 orderListFromDb);
         return ResponseEntity.ok(jsonResponse);
 
