@@ -11,6 +11,7 @@
 	<groupId>com.hexaware</groupId>
 	<artifactId>ordermanagement</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>ordermanagement</name>
 	<description>Demo project for training case study</description>
 	<properties>
@@ -67,8 +68,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>11</source>
-					<target>11</target>
+					<source>8</source>
+					<target>8</target>
 				</configuration>
 			</plugin>
 		</plugins>

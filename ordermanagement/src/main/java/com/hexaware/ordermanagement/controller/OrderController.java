@@ -145,7 +145,7 @@ public class OrderController {
 
         Integer numOfOrders = orderListFromDb.size();
         jsonResponse = new JsonResponse(true,
-                 numOfOrders + " order(s) with total greater than $"+ total + " successfully retrieved",
+                numOfOrders + " order(s) with total greater than $"+ total + " successfully retrieved",
                 orderListFromDb);
         return ResponseEntity.ok(jsonResponse);
     }
@@ -193,7 +193,7 @@ public class OrderController {
         JsonResponse jsonResponse;
         Optional<Order> orderFromDb = Optional.ofNullable(orderService.getOrderById(orderId));
 
-        if(orderFromDb.isEmpty()) {
+        if(!orderFromDb.isPresent()) {
             jsonResponse = new JsonResponse(false, "No order exist with order Id: " + orderId, null);
             return new ResponseEntity<>(jsonResponse, HttpStatus.NOT_FOUND);
         }
@@ -228,5 +228,4 @@ public class OrderController {
             return new ResponseEntity<>(jsonResponse, HttpStatus.CONFLICT);
         }
     }
-
 }
