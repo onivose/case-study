@@ -56,7 +56,7 @@ public class CustomerController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<JsonResponse> login (@RequestBody Customer customer, HttpSession httpSession){
+    public ResponseEntity<JsonResponse> login (@RequestBody Customer customer){
         logger.info("REQUEST: " + "--POST-- api/v1/customer/login @ " + LocalDateTime.now());
 
         Customer customerFromDb = customerService.getCustomerByUsername(customer.getUsername());
@@ -69,41 +69,10 @@ public class CustomerController {
                 JsonResponse jsonResponse = new JsonResponse(false, "Incorrect Password", null);
                 return new ResponseEntity<>(jsonResponse, HttpStatus.UNAUTHORIZED);
             } else {
-                // setting session for caching
-                httpSession.setAttribute("session", loginAttempt);
                 JsonResponse jsonResponse = new JsonResponse(true, "Successfully Logged In", loginAttempt);
                 return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
             }
         }
-    }
-
-    /**
-     * <H1>FOR INTERNAL USE ONLY</H1>
-     * used to verify that user is logged in for extra security
-     * not required as part of case study
-     * @param httpSession
-     * @return
-     */
-    @GetMapping
-    public ResponseEntity<JsonResponse> getSession (HttpSession httpSession){
-        Customer customer = (Customer) httpSession.getAttribute("session");
-
-        if(customer == null){
-            // session is empty meaning no user is logged in
-            JsonResponse jsonResponse = new JsonResponse(true, "No session found", null);
-            return new ResponseEntity<>(jsonResponse, HttpStatus.NOT_FOUND);
-        } else {
-            //session is found and user is logged in
-            JsonResponse jsonResponse = new JsonResponse(true, "Session found", customer);
-            return ResponseEntity.ok(jsonResponse);
-        }
-    }
-
-    @DeleteMapping
-    public ResponseEntity<JsonResponse> logoutOfSession (HttpSession httpSession){
-        httpSession.invalidate();
-        JsonResponse jsonResponse = new JsonResponse(true, "Successfully logged out and session invalidated.", null);
-        return ResponseEntity.ok(jsonResponse);
     }
 
     @GetMapping("/{customerId}")
