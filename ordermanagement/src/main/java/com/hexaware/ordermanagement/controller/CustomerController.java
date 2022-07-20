@@ -77,6 +77,13 @@ public class CustomerController {
         }
     }
 
+    /**
+     * <H1>FOR INTERNAL USE ONLY</H1>
+     * used to verify that user is logged in for extra security
+     * not required as part of case study
+     * @param httpSession
+     * @return
+     */
     @GetMapping
     public ResponseEntity<JsonResponse> getSession (HttpSession httpSession){
         Customer customer = (Customer) httpSession.getAttribute("session");

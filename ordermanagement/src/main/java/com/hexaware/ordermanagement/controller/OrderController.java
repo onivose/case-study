@@ -38,7 +38,19 @@ public class OrderController {
         this.productService = productService;
     }
 
-    //WORKS
+    /**
+     * <h3>Endpoint to begin new order creation process</h3>
+     * <p>
+     *     This endpoint creates a new order in the database with no products.
+     *     Customers then add products to order in the front end and use the endpoint to submit order to complete the process
+     * </p>
+     *
+     * <p>Method: POST</p>
+     * Url: api/v1/order/{customerId}
+     *
+     * @param customerId -> customer for which we want to create an order
+     * @return JsonResponse with success=false if customer with given id does not exist or true otherwise
+     */
     @PostMapping("{customerId}")
     public ResponseEntity<JsonResponse> beginNewOrder(@PathVariable Integer customerId){
 
@@ -63,7 +75,20 @@ public class OrderController {
 
     }
 
-    //WORKS
+    /**
+     * <h3>Endpoint to complete new order creation process</h3>
+     * <p>
+     *     This endpoint retrieves an order in the database then add given products to it and submits it.
+     * </p>
+     *
+     * <p>Method: POST</p>
+     * <p>Url: api/v1/order/submit/{OrderID}</p>
+     * <p>Body : a list of integers representing product ids of products to add to this order</p>
+     *
+     * @param productIds -> a list of integers representing product ids of products to add to this order
+     * @param orderId -> orderId of order we want to submit
+     * @return JsonResponse with success=false if order with given id does not exist or true if order was successfully submitted
+     */
     @PostMapping("submit/{orderId}")
     public ResponseEntity<JsonResponse> submitOrder(@RequestBody List<Integer> productIds, @PathVariable Integer orderId){
 
@@ -103,7 +128,13 @@ public class OrderController {
         return new ResponseEntity<>(jsonResponse, HttpStatus.OK);
     }
 
-    //WORKS
+    /**
+     * <p>Endpoint to retrieve all orders in the database </p>
+     *
+     * <p>Method: GET</p>
+     * Url: api/v1/order/
+     * @return JsonResponse with a list of orders as the "data" parameter or null if no orders are present
+     */
     @GetMapping
     public ResponseEntity<JsonResponse> getAllOrders(){
 
@@ -120,17 +151,16 @@ public class OrderController {
         return ResponseEntity.ok(jsonResponse);
     }
 
-    //WORKS
     /**
-     * Endpoint to find all orders in the database with total greater than the given value in path parameter
+     * <p>Endpoint to find all orders in the database with total greater than the given value in path parameter</p>
      *
-     * Method: GET
+     * <p>Method: GET</p>
      * Url: api/v1/order/greaterThan/{total}
      * @param total -> total price to filter orders
      * @return JsonResponse with a list of orders as the "data" parameter or null if no orders are present that meet the criteria
      */
     @GetMapping("/greaterThan/{total}")
-    ResponseEntity<JsonResponse> findAllWithTotalGreaterThan(@PathVariable Double total){
+    public ResponseEntity<JsonResponse> findAllWithTotalGreaterThan(@PathVariable Double total){
         logger.info("REQUEST: " + "--GET-- api/v1/order/greaterThan/" + total + " @ " + LocalDateTime.now());
 
         JsonResponse jsonResponse;
@@ -151,15 +181,15 @@ public class OrderController {
     }
 
     /**
-     * Endpoint to find all orders in the database with total less than the given value in path parameter
+     * <p>Endpoint to find all orders in the database with total less than the given value in path parameter</p>
      *
-     * Method: GET
+     * <p>Method: GET</p>
      * Url: api/v1/order/lessThan/{total}
      * @param total -> total price to filter orders
      * @return JsonResponse with a list of orders as the "data" parameter or null if no orders are present that meet the criteria
      */
     @GetMapping("/lessThan/{total}")
-    ResponseEntity<JsonResponse> findAllWithTotalLessThan(@PathVariable Double total){
+    public ResponseEntity<JsonResponse> findAllWithTotalLessThan(@PathVariable Double total){
         logger.info("REQUEST: " + "--GET-- api/v1/order/lessThan/" + total + " @ " + LocalDateTime.now());
 
         JsonResponse jsonResponse;
@@ -180,10 +210,13 @@ public class OrderController {
 
     }
 
-    //WORKS
     /**
-     * @param orderId
-     * @return
+     * <p>Endpoint to find one order in the database by a specific id</p>
+     *
+     * <p>Method: GET</p>
+     *  Url: api/v1/order/{orderId}
+     * @param orderId -> id of order we want to retrieve
+     * @return JsonResponse with success = true if order was retrieved or false otherwise
      */
     @GetMapping("{orderId}")
     public ResponseEntity<JsonResponse> getOrderById(@PathVariable Integer orderId){
@@ -202,7 +235,14 @@ public class OrderController {
         return ResponseEntity.ok(jsonResponse);
     }
 
-    //WORKS
+    /**
+     * <p>Endpoint to find all orders in the database for Customer with the id given in path parameter</p>
+     *
+     * <p>Method: GET</p>
+     * Url: api/v1/order/customer/{customerId}
+     * @param customerId -> id of customer for which we want to retrieve orders
+     * @return JsonResponse with a list of orders as the "data" parameter or null if no orders are present that meet the criteria
+     */
     @GetMapping("customer/{customerId}")
     public ResponseEntity<JsonResponse> getAllOrdersForCustomerWithId(@PathVariable Integer customerId){
         logger.info("REQUEST: " + "--GET-- api/v1/order/customer/" + customerId + " @ " + LocalDateTime.now());
@@ -220,7 +260,6 @@ public class OrderController {
             return ResponseEntity.ok(jsonResponse);
 
         } catch (NullPointerException e) {
-            //todo look into this line
             logger.warn("Null pointer Exception (Cause: customer with id: "+ customerId
                     + " does not exist.) Stack trace: " + Arrays.toString(e.getStackTrace()));
 

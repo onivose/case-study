@@ -117,20 +117,23 @@ public class OrderServiceImpl implements OrderService{
     public Double calculateOrderTotal(Order order) {
         List<Product> products = order.getProducts();
         List<Double> productPrices = new ArrayList<>();
-        for (Product product : products){
+        products.forEach(product ->{
             productPrices.add(product.getPrice());
-        }
+        });
         return productPrices.stream().mapToDouble(Double::doubleValue).sum(); //todo look into this line
     }
 
+    /**
+     * Last step in order creation process.
+     * Allows user to submit an order after having added one or multiple products to their cart
+     * @param productIds  list of a ll the product ids to be added to the order
+     * @param orderId order id of order to submit
+     * @return
+     */
     @Override
     public Order submitOrder(List<Integer> productIds, Integer orderId) {
 
         Order orderToSubmit = this.getOrderById(orderId);
-
-        //---------------------------FOR TESTING ONLY, REMOVE AFTER TESTING--------------------------------------------
-        // productService.getInitialProducts(); //persists some products in the db to check submit order functionality
-        //-------------------------------------------------------------------------------------------------------------
 
         List<Product> orderProducts = new ArrayList<>();
 
@@ -156,6 +159,7 @@ public class OrderServiceImpl implements OrderService{
             orderProducts.add(orderProduct);
         }
 
+        //set the list of products in the order before saving to db
         orderToSubmit.setProducts(orderProducts);
 
         // calculate and set order total before saving to db

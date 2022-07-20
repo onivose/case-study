@@ -55,5 +55,12 @@ public interface OrderService {
      */
     Double calculateOrderTotal (Order order);
 
+    /**
+     * Last step in order creation process.
+     * Allows user to submit an order after having added one or multiple products to their cart
+     * @param productIds  list of a ll the product ids to be added to the order
+     * @param orderId order id of order to submit
+     * @return
+     */
     Order submitOrder(List<Integer> productIds, Integer orderId);
 }

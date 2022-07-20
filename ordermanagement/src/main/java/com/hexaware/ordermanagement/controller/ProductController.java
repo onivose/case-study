@@ -16,7 +16,7 @@ public class ProductController {
 
     private ProductService productService;
 
-    //todo add logging
+    //todo add logging (Not required for Case Study)
 
     @Autowired
     public ProductController(ProductService productService) {
