@@ -85,7 +85,9 @@ async function getAllOrders(){
 
 //DONE
 function goToNewOrder(){
-    window.location.href = `http://127.0.0.1:5502/new-order`
+    //window.location.href = "\ordermanagement-0.0.1-SNAPSHOT/new-order/index.html"
+    window.location.href = "../new-order/index.html"
+    //window.location.href = "\ordermanagement-0.0.1-SNAPSHOT/dashboard/index.html"
 }
 
 //DONE 

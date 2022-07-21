@@ -99,14 +99,94 @@ public class ProductServiceImpl implements ProductService{
                 .build();
 
         Product p10 = Product.builder()
-                .name("Apple Watch")
-                .manufacturer("Apple")
-                .type("Smart Watch")
+                .name("Pixel 6")
+                .manufacturer("Google")
+                .type("Smartphone")
+                .price(Double.parseDouble("599.99"))
+                .purchased(false)
+                .build();
+
+        Product p11 = Product.builder()
+                .name("Galaxy Tab S8")
+                .manufacturer("Samsung")
+                .type("Tablet")
                 .price(Double.parseDouble("399.99"))
                 .purchased(false)
                 .build();
 
-        List<Product> initialProducts = new ArrayList<>(Arrays.asList(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10));
+        Product p12 = Product.builder()
+                .name("A50 Wireless Headset")
+                .manufacturer("Astro Gaming")
+                .type("Headphones")
+                .price(Double.parseDouble("280.99"))
+                .purchased(false)
+                .build();
+
+        Product p13 = Product.builder()
+                .name("PlayStation 5")
+                .manufacturer("Sony")
+                .type("Gaming Console")
+                .price(Double.parseDouble("599.99"))
+                .purchased(false)
+                .build();
+
+        Product p14 = Product.builder()
+                .name("Xbox Series X")
+                .manufacturer("Microsoft")
+                .type("Gaming Console")
+                .price(Double.parseDouble("499.99"))
+                .purchased(false)
+                .build();
+
+        Product p15 = Product.builder()
+                .name("Nintendo Switch")
+                .manufacturer("Nintendo")
+                .type("Gaming Console")
+                .price(Double.parseDouble("299.99"))
+                .purchased(false)
+                .build();
+
+        Product p16 = Product.builder()
+                .name("Amazon Fire TV 55\" 4 Series" )
+                .manufacturer("Amazon")
+                .type("Smart TV")
+                .price(Double.parseDouble("499.99"))
+                .purchased(false)
+                .build();
+
+        Product p17 = Product.builder()
+                .name("Mobius EX251")
+                .manufacturer("BenQ")
+                .type("Gaming Monitor")
+                .price(Double.parseDouble("229.99"))
+                .purchased(false)
+                .build();
+
+        Product p18 = Product.builder()
+                .name("G703 LightSpeed")
+                .manufacturer("Logitech")
+                .type("Gaming Mouse")
+                .price(Double.parseDouble("78.99"))
+                .purchased(false)
+                .build();
+
+        Product p19 = Product.builder()
+                .name("Basilik X Hyperspeed")
+                .manufacturer("Razer")
+                .type("Gaming Mouse")
+                .price(Double.parseDouble("59.99"))
+                .purchased(false)
+                .build();
+
+        Product p20 = Product.builder()
+                .name("G213 Prodigy")
+                .manufacturer("Logitech")
+                .type("Gaming Keyboard")
+                .price(Double.parseDouble("69.99"))
+                .purchased(false)
+                .build();
+
+        List<Product> initialProducts = new ArrayList<>(Arrays.asList(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20));
 
         initialProducts.forEach(this::createProduct);
     }

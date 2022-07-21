@@ -38,7 +38,8 @@ public class Product {
     private Boolean purchased;
 
     // CascadeType.All means that if the order is deleted, the corresponding product will also be deleted
-    @ManyToOne (fetch = FetchType.LAZY, cascade = CascadeType.ALL) //todo look into Lazy fetch meaning
+    // Lazy fetch meaning when fetching a product from the db, the order field will not be retrieved unless needed
+    @ManyToOne (fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id_fk")
     private Order orderFk;
 }

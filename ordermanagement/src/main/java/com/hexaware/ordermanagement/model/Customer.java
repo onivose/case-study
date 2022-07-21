@@ -31,10 +31,11 @@ public class Customer {
     private String password;
 
     //todo add email validation
+    //@Email is depreciated
     @Column(unique = true, nullable = false)
     private String email;
 
-    //todo look into street address validation
+    //todo add street address validation
     @Column(nullable = false)
     private String shippingAddress;
 

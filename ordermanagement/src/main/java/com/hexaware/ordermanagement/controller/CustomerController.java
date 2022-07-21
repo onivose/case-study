@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 
 @RestController // makes it so the controller consumes and responds with json
 @RequestMapping("api/v1/customer")
-@CrossOrigin(origins = { "http://localhost:8080", "http://127.0.0.1:5502" })
+@CrossOrigin(origins = { "http://localhost:8080", "http://127.0.0.1:5502", "http://10.3.187.116:7001/ordermanagement-0.0.1-SNAPSHOT" })
 public class CustomerController {
 
     Logger logger = LoggerFactory.getLogger(CustomerController.class);

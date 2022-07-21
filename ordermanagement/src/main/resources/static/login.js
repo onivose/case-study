@@ -33,7 +33,7 @@ document.getElementById("login-form").addEventListener("submit", async function 
         messageElem.innerText = responseBody.message
 
     }else{
-        window.location.href = `http://127.0.0.1:5502/dashboard`
+        window.location.href = "\ordermanagement-0.0.1-SNAPSHOT/dashboard/index.html"
     }
 
 })
